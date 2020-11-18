@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game of C&A</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    </br>
+    </br>
+    </br>
+    <div id="game" class="btn btn-info btn-block"></div>
+    <div id="stopwatch" class="btn btn-info btn-block">00:00:00:00</div>
+    <script src='index.js'></script>
+
+    <script>
+        var numbers1 = [];
+        var waspres = [];
+        var onnumber = [];
+        var sizerow = 3, sizecol = 3, maxnumbergame = 18, halfnum = 9;
+        var counter = 1, counter2 = 1;
+        var ms = 0, s = 0, m = 0, h = 0;; var xx;
+        var timer = true;
+        var stopwatch = document.getElementById('stopwatch');
+        //----------------------------------------------------------------------
+        for (var row = 0; row < sizerow; row++) {
+            onnumber[row] = [];
+            for (var col = 0; col < sizecol; col++) {
+                onnumber[row][col] = false;
+            }
+        }
+        for (var row = 0; row < sizerow; row++) {
+            numbers1[row] = [];
+            for (var col = 0; col < sizecol; col++) {
+                numbers1[row][col] = 0;
+            }
+        }
+        for (var row = 0; row < sizerow; row++) {
+            waspres[row] = [];
+            for (var col = 0; col < sizecol; col++) {
+                waspres[row][col] = false;
+            }
+        }
+        //----------------------------------------------------------------------
+        function setnumber() {
+            var r, c;
+            for (var i = 0; i < maxnumbergame / 2; i++) {
+                do {
+                    r = Math.floor(Math.random() * sizerow);
+                    c = Math.floor(Math.random() * sizecol);
+                } while (onnumber[r][c] == true)
+                onnumber[r][c] = true;
+                numbers1[r][c] = counter;
+                counter++;
+            }
+        }
+        function showbord() {
+            str = "<h1 align=center >C-&&-A</h1>";
+
+
+
+            str += "<table align=center>";
+            for (var row = 0; row < sizerow; row++) {
+                str += "<tr>";
+                for (var col = 0; col < sizecol; col++) {
+                    str += "<td>";
+                    str += "<button class='btn btn-info btn-block'";
+                    if (!waspres[row][col] && numbers1[row][col] == counter2) {
+                        str += " onclick=prs(" + row + "," + col + ")>";
+                    }
+                    else str += ">";
+                    str += numbers1[row][col];
+                    str += "</button>";
+                    str += "</td>";
+                }
+                str += "</tr>";
+            }
+            str += "</table>";
+            str += "<button class='btn btn-danger navbar-btn' onclick='newgame()' align=center >new game</button>";
+            document.getElementById('game').innerHTML = str;
+        }
+        function prs(row, col) {
+            if (numbers1[row][col] == 1) {
+                startstopwatch();
+            }
+            if (maxnumbergame - 1 == numbers1[row][col]) {
+                stopwhtchendgame();
+            }
+            if (numbers1[row][col] < halfnum) {
+                waspres[row][col] = true;
+                numbers1[row][col] = counter++;
+            }
+            else if (numbers1[row][col] == halfnum) {
+                for (var r = 0; r < sizerow; r++) {
+                    for (var c = 0; c < sizecol; c++) {
+                        waspres[r][c] = false;
+                        numbers1[row][col] = "#";
+
+                    }
+                }
+            }
+            else if (numbers1[row][col] >= halfnum) {
+                numbers1[row][col] = "#";
+            } console.log(row, col);
+            console.log("c1:" + counter2);
+            console.log("v:" + numbers1[row][col]);
+            counter2++;
+            showbord();
+        }
+        function newgame() {
+            counter = 1, counter2 = 1;
+            for (var row = 0; row < sizerow; row++) {
+                onnumber[row] = [];
+                for (var col = 0; col < sizecol; col++) {
+                    onnumber[row][col] = false;
+                }
+            }
+            for (var row = 0; row < sizerow; row++) {
+                numbers1[row] = [];
+                for (var col = 0; col < sizecol; col++) {
+                    numbers1[row][col] = 0;
+                }
+            }
+            for (var row = 0; row < sizerow; row++) {
+                waspres[row] = [];
+                for (var col = 0; col < sizecol; col++) {
+                    waspres[row][col] = false;
+                }
+            }
+            stopwhtchendgame();
+            restart();
+            setnumber();
+            showbord();
+        }
+        function startstopwatch() {
+            if (timer) {
+                xx = setInterval(run, 10);
+            }
+            timer = false;
+        }
+        function run() {
+            stopwatch.textContent = (h < 10 ? "0" + h : h) + ":" + (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s) + ":" + (ms < 10 ? "0" + ms : ms);
+            ms++;
+            if (ms == 99) {
+                ms = 0;
+                s++;
+            }
+            if (s == 60) {
+                s == 0;
+                m++;
+            }
+            if (m == 60) {
+                m == 0;
+                h++;
+            }
+        }
+        function stopwhtchendgame() {
+            clearInterval(xx);
+            ms = 0;
+            s = 0;
+            m = 0;
+            timer = true;
+        }
+        function restart() {
+            stopwatch.textContent = (h < 10 ? "0" + h : h) + ":" + (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s) + ":" + (ms < 10 ? "0" + ms : ms);
+        }
+        setnumber();
+        showbord();
+    </script>
+</body>
+
+</html>
